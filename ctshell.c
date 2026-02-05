@@ -417,7 +417,7 @@ void ctshell_input(ctshell_ctx_t *ctx, char byte) {
     }
 }
 
-void ctshell_task(ctshell_ctx_t *ctx) {
+void ctshell_poll(ctshell_ctx_t *ctx) {
     while (ctx->fifo_head != ctx->fifo_tail) {
         char byte = ctx->fifo_buf[ctx->fifo_tail];
         ctx->fifo_tail = (ctx->fifo_tail + 1) % CTSHELL_FIFO_SIZE;

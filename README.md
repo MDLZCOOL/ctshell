@@ -1,6 +1,6 @@
 # ctshell
 
-[![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE)
 
 Ctshell is a low-overhead shell designed specifically for resource-constrained embedded systems.
 
@@ -15,7 +15,7 @@ Ctshell is a low-overhead shell designed specifically for resource-constrained e
 * Built-in Argument Parser: Includes a strictly-typed argument parser to easily handle flags (bool), integers, strings, and verbs within custom commands.
 * ANSI Escape Sequence Support: Handles standard VT100/ANSI escape codes for arrow keys and screen control.
 
-## Install
+## Porting
 
 Ctshell is easy to port — native port implementations for multiple mainstream embedded platforms are provided out of the box.
 
@@ -23,7 +23,7 @@ For other details, please refer to the docs.
 
 ## Demo
 
-Ctshell provides an intuitive interactive experience, and the core function demonstrations are as follows (all screenshots are actual running effects of ctshell):
+Ctshell provides an intuitive interactive experience, and the core function demonstrations are as follows:
 
 ### View All Available Commands
 
@@ -119,7 +119,7 @@ ina226 start -b 1 -a 64  # Decimal 64 for hex 0x40, ctshell supports decimal/hex
 # Stop INA226 data collection
 ina226 stop
 
-# View INA226 current working status, voltage/current/power data
+# View INA226 current working status
 ina226 status
 
 # View command usage
@@ -130,10 +130,10 @@ As you can see, ctshell delivers a streamlined interactive experience for embedd
 
 ## Documentation
 
-TODO.
+Available at [ctshell Documentation](https://ctshell.readthedocs.io/en/latest/).
 
 ## License
 
 Copyright 2026 MDLZCOOL.
 
-Distributed under the terms of the  [Apache 2.0 license](https://github.com/MDLZCOOL/ctshell/blob/master/LICENSE).
+Distributed under the terms of the  [Apache 2.0 license](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE).

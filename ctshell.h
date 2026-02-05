@@ -208,7 +208,7 @@ typedef struct {
 
 void ctshell_init(ctshell_ctx_t *ctx, ctshell_io_t io, void *priv);
 void ctshell_input(ctshell_ctx_t *ctx, char byte);
-void ctshell_task(ctshell_ctx_t *ctx);
+void ctshell_poll(ctshell_ctx_t *ctx);
 void ctshell_printf(const char *fmt, ...);
 void ctshell_check_abort(ctshell_ctx_t *ctx);
 void ctshell_delay(ctshell_ctx_t *ctx, uint32_t ms);
