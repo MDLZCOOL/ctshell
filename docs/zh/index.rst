@@ -155,6 +155,6 @@ Copyright 2026 MDLZCOOL.
 
 .. toctree::
    :maxdepth: 1
-   :caption: API 手册
+   :caption: API 参考手册
 
    api/api

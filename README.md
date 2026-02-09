@@ -1,6 +1,6 @@
 # ctshell
 
-[![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE)
+[![readthedocs](https://img.shields.io/readthedocs/ctshell)](https://ctshell.readthedocs.io/en/latest/) [![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE)
 
 Ctshell is a low-overhead shell designed specifically for resource-constrained embedded systems.
 
@@ -14,6 +14,8 @@ Ctshell is a low-overhead shell designed specifically for resource-constrained e
 * Signal Handling (SIGINT): Implements setjmp/longjmp logic to abort long-running commands via `Ctrl+C`.
 * Built-in Argument Parser: Includes a strictly-typed argument parser to easily handle flags (bool), integers, strings, and verbs within custom commands.
 * ANSI Escape Sequence Support: Handles standard VT100/ANSI escape codes for arrow keys and screen control.
+* Filesystem Support: Out-of-box for `FatFS` now, other fs native support will come soon.
+* Command Hierarchy Framework: Supports hierarchical command management, see //////////////////////////.
 
 ## Porting
 

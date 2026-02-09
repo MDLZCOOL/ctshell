@@ -22,7 +22,7 @@ STM32
 
 2. 添加文件
 
-将 ``ctshell.c`` 和 ``ctshell.h`` 复制到你的工程目录，并添加到编译构建系统中。
+将下载的仓库复制到你的工程目录，并添加到编译构建系统中，即将支持CMake。
 
 3. 实现 IO 接口
 
@@ -90,6 +90,18 @@ RTOS 环境: 建议创建一个独立的任务来运行 Shell。
         }
     }
 
-6. 测试
+6. 链接脚本修改
+
+    gcc：无需修改。
+
+    MDK-ARM（v5 and v6）：在scatter file中添加示例如下：
+
+.. code-block:: c
+
+      CtshellCmdSection +0 {
+        *(ctshell_cmd_section)
+      }
+
+7. 测试
 
 连接串口终端软件（如 MobaXterm, SecureCRT, Putty）。输入 ``help`` 并回车，如果看到命令列表，说明移植成功。

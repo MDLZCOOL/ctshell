@@ -13,19 +13,10 @@ extern "C" {
 #include <string.h>
 #include <stddef.h>
 #include <setjmp.h>
-
-/* Configuration Defines */
-#define CTSHELL_CMD_NAME_MAX_LEN    16
-#define CTSHELL_LINE_BUF_SIZE       128
-#define CTSHELL_MAX_ARGS            16
-#define CTSHELL_HISTORY_SIZE        5
-#define CTSHELL_VAR_MAX_COUNT       8
-#define CTSHELL_VAR_NAME_LEN        16
-#define CTSHELL_VAR_VAL_LEN         32
-#define CTSHELL_FIFO_SIZE           128
-#define CTSHELL_PROMPT              "ctsh>> "
+#include "ctshell_config.h"
 
 #define ctshell_error(fmt, ...)   ctshell_printf("Error: " fmt "\r\n", ##__VA_ARGS__)
+#define CTSHELL_UNUSED_PARAM(x) ((void)(x))
 
 /**
  * @brief Shell IO interface.
@@ -121,6 +112,38 @@ typedef enum {
     CTSHELL_DFA_TILDE
 } ctshell_dfa_state_t;
 
+#ifdef CTSHELL_USE_FS
+/* File Types */
+typedef enum {
+    CTSHELL_FS_TYPE_UNKNOWN = 0,
+    CTSHELL_FS_TYPE_FILE,
+    CTSHELL_FS_TYPE_DIR
+} ctshell_file_type_t;
+
+/* Directory Entry Info */
+typedef struct {
+    char name[CTSHELL_FS_NAME_MAX];
+    uint32_t size;
+    ctshell_file_type_t type;
+} ctshell_dirent_t;
+
+/* File System Driver Interface */
+typedef struct {
+    int (*open)(const char *path, int flags);
+    int (*close)(int fd);
+    int (*read)(int fd, void *buf, uint32_t count);
+    int (*write)(int fd, const void *buf, uint32_t count);
+    uint32_t (*size)(int fd);
+    int (*opendir)(const char *path, void **dir_handle);
+    int (*readdir)(void *dir_handle, ctshell_dirent_t *entry);
+    int (*closedir)(void *dir_handle);
+    int (*stat)(const char *path, ctshell_dirent_t *info);
+    int (*unlink)(const char *path);
+    int (*mkdir)(const char *path);
+    int (*lseek)(int fd, long offset, int whence);
+} ctshell_fs_drv_t;
+#endif
+
 /**
  * @brief Main shell context.
  */
@@ -145,14 +168,37 @@ typedef struct {
     volatile int sigint;
     jmp_buf jump_env;
     int is_executing;
+
+#ifdef CTSHELL_USE_FS
+    const ctshell_fs_drv_t *fs_drv;
+    char cwd[CTSHELL_FS_PATH_MAX];
+#endif
 } ctshell_ctx_t;
+
+typedef enum {
+    CTSHELL_ATTR_NONE   = 0,
+    CTSHELL_ATTR_MENU   = (1 << 0),
+    CTSHELL_ATTR_HIDDEN = (1 << 1),
+} ctshell_cmd_attr_t;
+
+#ifdef CTSHELL_USE_FS
+#ifndef SEEK_SET
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+#endif
+#define CTSHELL_O_TRUNC  1
+#define CTSHELL_O_APPEND 2
+#endif
 
 typedef int (*ctshell_cmd_func_t)(int argc, char *argv[]);
 
-typedef struct {
+typedef struct ctshell_cmd_t {
     const char *name;
     const char *desc;
     ctshell_cmd_func_t func;
+    uint32_t attrs;
+    const struct ctshell_cmd_t *parent;
 } ctshell_cmd_t;
 
 #if defined(__GNUC__) || defined(__clang__) || defined(__CC_ARM)
@@ -163,15 +209,29 @@ typedef struct {
 #error "Current compiler is not supported yet."
 #endif
 
-#define CTSHELL_EXPORT_CMD(_name, _func, _desc) \
-    const ctshell_cmd_t ctcmd_##_name \
+#define CTSHELL_EXPORT_CMD(_name, _func, _desc, _attr) \
+    static const ctshell_cmd_t __ctshell_cmd_##_name \
     CTSHELL_SECTION("ctshell_cmd_section") \
     CTSHELL_USED \
-    CTSHELL_ALIGN \
-    = { \
-        .name = #_name, \
-        .desc = _desc, \
-        .func = _func \
+    CTSHELL_ALIGN = { \
+        .name   = #_name, \
+        .desc   = _desc, \
+        .func   = _func, \
+        .parent = NULL, \
+        .attrs  = _attr \
+    }
+
+#define CTSHELL_EXPORT_SUBCMD(_parent, _name, _func, _desc) \
+    extern const ctshell_cmd_t __ctshell_cmd_##_parent; \
+    static const ctshell_cmd_t __ctshell_cmd_##_parent##_##_name \
+    CTSHELL_SECTION("ctshell_cmd_section") \
+    CTSHELL_USED \
+    CTSHELL_ALIGN = { \
+        .name   = #_name, \
+        .desc   = _desc, \
+        .func   = _func, \
+        .parent = &__ctshell_cmd_##_parent, \
+        .attrs  = CTSHELL_ATTR_NONE \
     }
 
 typedef enum {
@@ -228,6 +288,11 @@ int ctshell_get_bool(ctshell_arg_parser_t *p, const char *key);
 double ctshell_get_double(ctshell_arg_parser_t *p, const char *key);
 #endif
 int ctshell_has(ctshell_arg_parser_t *p, const char *key);
+#ifdef CTSHELL_USE_FS
+#ifdef CTSHELL_USE_FS_FATFS
+extern void ctshell_fatfs_init(ctshell_ctx_t *ctx);
+#endif
+#endif
 
 #ifdef __cplusplus
 }

@@ -22,7 +22,7 @@ Prepare a project capable of sending and receiving data via UART.
 
 2. Add Files
 
-Copy ``ctshell.c`` and ``ctshell.h`` to your project directory and add them to your build system.
+Copy downloaded repo to your project directory and add them to your build system, CMake support will come soon.
 
 3. Implement IO Interface
 
@@ -90,6 +90,18 @@ RTOS Environment: It is recommended to create a dedicated task to run the Shell.
         }
     }
 
-6. Testing
+6. Linker Script Modification
+
+    gcc: No need to modify.
+
+    MDK-ARM(v5 and v6): Add in scatter file, example:
+
+.. code-block:: c
+
+      CtshellCmdSection +0 {
+        *(ctshell_cmd_section)
+      }
+
+7. Testing
 
 Connect via serial terminal software (e.g., MobaXterm, SecureCRT, Putty). Type ``help`` and press Enter. If you see the command list, the porting was successful.
