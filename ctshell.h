@@ -31,8 +31,8 @@ typedef struct {
  * @brief Shell environment variable.
  */
 typedef struct {
-    char name[CTSHELL_VAR_NAME_LEN];
-    char value[CTSHELL_VAR_VAL_LEN];
+    char name[CONFIG_CTSHELL_VAR_NAME_LEN];
+    char value[CONFIG_CTSHELL_VAR_VAL_LEN];
     int used;
 } ctshell_var_t;
 
@@ -112,7 +112,7 @@ typedef enum {
     CTSHELL_DFA_TILDE
 } ctshell_dfa_state_t;
 
-#ifdef CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS
 /* File Types */
 typedef enum {
     CTSHELL_FS_TYPE_UNKNOWN = 0,
@@ -122,7 +122,7 @@ typedef enum {
 
 /* Directory Entry Info */
 typedef struct {
-    char name[CTSHELL_FS_NAME_MAX];
+    char name[CONFIG_CTSHELL_FS_NAME_MAX];
     uint32_t size;
     ctshell_file_type_t type;
 } ctshell_dirent_t;
@@ -151,16 +151,16 @@ typedef struct {
     ctshell_io_t io;
     void *priv;
 
-    char fifo_buf[CTSHELL_FIFO_SIZE];
+    char fifo_buf[CONFIG_CTSHELL_FIFO_SIZE];
     volatile uint16_t fifo_head;
     volatile uint16_t fifo_tail;
 
-    ctshell_var_t vars[CTSHELL_VAR_MAX_COUNT];
-    char line_buf[CTSHELL_LINE_BUF_SIZE];
+    ctshell_var_t vars[CONFIG_CTSHELL_VAR_MAX_COUNT];
+    char line_buf[CONFIG_CTSHELL_LINE_BUF_SIZE];
     uint16_t line_len;
     uint16_t cur_pos;
 
-    char history[CTSHELL_HISTORY_SIZE][CTSHELL_LINE_BUF_SIZE];
+    char history[CONFIG_CTSHELL_HISTORY_SIZE][CONFIG_CTSHELL_LINE_BUF_SIZE];
     uint8_t history_count;
     uint8_t history_index;
 
@@ -169,9 +169,9 @@ typedef struct {
     jmp_buf jump_env;
     int is_executing;
 
-#ifdef CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS
     const ctshell_fs_drv_t *fs_drv;
-    char cwd[CTSHELL_FS_PATH_MAX];
+    char cwd[CONFIG_CTSHELL_FS_PATH_MAX];
 #endif
 } ctshell_ctx_t;
 
@@ -181,7 +181,7 @@ typedef enum {
     CTSHELL_ATTR_HIDDEN = (1 << 1),
 } ctshell_cmd_attr_t;
 
-#ifdef CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS
 #ifndef SEEK_SET
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -239,7 +239,7 @@ typedef enum {
     CTSHELL_ARG_INT,
     CTSHELL_ARG_STR,
     CTSHELL_ARG_VERB,
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
     CTSHELL_ARG_DOUBLE,
 #endif
 } ctshell_arg_type_t;
@@ -252,7 +252,7 @@ typedef struct {
         int i_val;
         char *s_val;
         int b_val;
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
         double d_val;
 #endif
     } value;
@@ -260,7 +260,7 @@ typedef struct {
 } ctshell_arg_def_t;
 
 typedef struct {
-    ctshell_arg_def_t args[CTSHELL_MAX_ARGS];
+    ctshell_arg_def_t args[CONFIG_CTSHELL_MAX_ARGS];
     int count;
     int argc;
     char **argv;
@@ -277,19 +277,19 @@ void ctshell_expect_int(ctshell_arg_parser_t *p, const char *flag, const char *k
 void ctshell_expect_str(ctshell_arg_parser_t *p, const char *flag, const char *key);
 void ctshell_expect_bool(ctshell_arg_parser_t *p, const char *flag, const char *key);
 void ctshell_expect_verb(ctshell_arg_parser_t *p, const char *verb_name);
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
 void ctshell_expect_double(ctshell_arg_parser_t *p, const char *flag, const char *key);
 #endif
 void ctshell_args_parse(ctshell_arg_parser_t *p);
 int ctshell_get_int(ctshell_arg_parser_t *p, const char *key);
 char *ctshell_get_str(ctshell_arg_parser_t *p, const char *key);
 int ctshell_get_bool(ctshell_arg_parser_t *p, const char *key);
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
 double ctshell_get_double(ctshell_arg_parser_t *p, const char *key);
 #endif
 int ctshell_has(ctshell_arg_parser_t *p, const char *key);
-#ifdef CTSHELL_USE_FS
-#ifdef CTSHELL_USE_FS_FATFS
+#ifdef CONFIG_CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS_FATFS
 extern void ctshell_fatfs_init(ctshell_ctx_t *ctx);
 #endif
 #endif

@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 #include "ctshell_config.h"
-#if defined(CTSHELL_USE_FS) && defined(CTSHELL_USE_FS_FATFS)
+#include "ctshell.h"
+#if defined(CONFIG_CTSHELL_USE_FS) && defined(CONFIG_CTSHELL_USE_FS_FATFS)
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
 #include "ff.h"
-#include "ctshell.h"
 
 #define MAX_OPEN_FILES  2
 
@@ -157,8 +157,8 @@ static int fatfs_opendir(const char *path, void **dir_handle) {
 
 static int fatfs_readdir(void *dir_handle, ctshell_dirent_t *entry) {
     if (f_readdir((DIR *) dir_handle, &fno) == FR_OK && fno.fname[0] != 0) {
-        strncpy(entry->name, fno.fname, CTSHELL_FS_NAME_MAX - 1);
-        entry->name[CTSHELL_FS_NAME_MAX - 1] = '\0';
+        strncpy(entry->name, fno.fname, CONFIG_CTSHELL_FS_NAME_MAX - 1);
+        entry->name[CONFIG_CTSHELL_FS_NAME_MAX - 1] = '\0';
         entry->size = fno.fsize;
         entry->type = (fno.fattrib & AM_DIR) ? CTSHELL_FS_TYPE_DIR : CTSHELL_FS_TYPE_FILE;
         return 0;
@@ -240,10 +240,10 @@ static int fatfs_unlink(const char *path) {
     if (res == FR_DENIED) {
         if (f_stat(path, &fno) == FR_OK) {
             if (fno.fattrib & AM_DIR) {
-                char *work_path = malloc(CTSHELL_FS_PATH_MAX);
+                char *work_path = malloc(CONFIG_CTSHELL_FS_PATH_MAX);
                 if (work_path) {
-                    strncpy(work_path, path, CTSHELL_FS_PATH_MAX);
-                    res = delete_node(work_path, CTSHELL_FS_PATH_MAX, &fno);
+                    strncpy(work_path, path, CONFIG_CTSHELL_FS_PATH_MAX);
+                    res = delete_node(work_path, CONFIG_CTSHELL_FS_PATH_MAX, &fno);
                     free(work_path);
                 } else {
                     ctshell_error("unlink: out of memory\r\n");

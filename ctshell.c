@@ -92,7 +92,7 @@ static void ctshell_clear_line_view(ctshell_ctx_t *ctx) {
 }
 
 static ctshell_var_t *find_var(ctshell_ctx_t *ctx, const char *name) {
-    for (int i = 0; i < CTSHELL_VAR_MAX_COUNT; i++) {
+    for (int i = 0; i < CONFIG_CTSHELL_VAR_MAX_COUNT; i++) {
         if (ctx->vars[i].used && strcmp(ctx->vars[i].name, name) == 0) {
             return &ctx->vars[i];
         }
@@ -103,16 +103,16 @@ static ctshell_var_t *find_var(ctshell_ctx_t *ctx, const char *name) {
 static int set_var(ctshell_ctx_t *ctx, const char *name, const char *value) {
     ctshell_var_t *var = find_var(ctx, name);
     if (var) {
-        strncpy(var->value, value, CTSHELL_VAR_VAL_LEN - 1);
-        var->value[CTSHELL_VAR_VAL_LEN - 1] = '\0';
+        strncpy(var->value, value, CONFIG_CTSHELL_VAR_VAL_LEN - 1);
+        var->value[CONFIG_CTSHELL_VAR_VAL_LEN - 1] = '\0';
         return 0;
     }
-    for (int i = 0; i < CTSHELL_VAR_MAX_COUNT; i++) {
+    for (int i = 0; i < CONFIG_CTSHELL_VAR_MAX_COUNT; i++) {
         if (!ctx->vars[i].used) {
-            strncpy(ctx->vars[i].name, name, CTSHELL_VAR_NAME_LEN - 1);
-            ctx->vars[i].name[CTSHELL_VAR_NAME_LEN - 1] = '\0';
-            strncpy(ctx->vars[i].value, value, CTSHELL_VAR_VAL_LEN - 1);
-            ctx->vars[i].value[CTSHELL_VAR_VAL_LEN - 1] = '\0';
+            strncpy(ctx->vars[i].name, name, CONFIG_CTSHELL_VAR_NAME_LEN - 1);
+            ctx->vars[i].name[CONFIG_CTSHELL_VAR_NAME_LEN - 1] = '\0';
+            strncpy(ctx->vars[i].value, value, CONFIG_CTSHELL_VAR_VAL_LEN - 1);
+            ctx->vars[i].value[CONFIG_CTSHELL_VAR_VAL_LEN - 1] = '\0';
             ctx->vars[i].used = 1;
             return 0;
         }
@@ -130,11 +130,11 @@ static int ctshell_expand_vars(ctshell_ctx_t *ctx) {
     if (!p) return 0;
 
     while (p) {
-        char var_name[CTSHELL_VAR_NAME_LEN] = {0};
+        char var_name[CONFIG_CTSHELL_VAR_NAME_LEN] = {0};
         char *end = p + 1;
         int n_len = 0;
 
-        while (*end && (isalnum((int) *end) || *end == '_') && n_len < CTSHELL_VAR_NAME_LEN - 1) {
+        while (*end && (isalnum((int) *end) || *end == '_') && n_len < CONFIG_CTSHELL_VAR_NAME_LEN - 1) {
             var_name[n_len++] = *end++;
         }
         var_name[n_len] = '\0';
@@ -149,7 +149,7 @@ static int ctshell_expand_vars(ctshell_ctx_t *ctx) {
         int val_len = strlen(val_str);
         int diff = val_len - (1 + n_len);
 
-        if (strlen(ctx->line_buf) + diff >= CTSHELL_LINE_BUF_SIZE - 1) return 0;
+        if (strlen(ctx->line_buf) + diff >= CONFIG_CTSHELL_LINE_BUF_SIZE - 1) return 0;
 
         memmove(p + val_len, end, strlen(end) + 1);
         memcpy(p, val_str, val_len);
@@ -161,16 +161,16 @@ static int ctshell_expand_vars(ctshell_ctx_t *ctx) {
 
 static void ctshell_save_history(ctshell_ctx_t *ctx) {
     if (ctx->line_len == 0) return;
-    int idx = ctx->history_count % CTSHELL_HISTORY_SIZE;
-    strncpy(ctx->history[idx], ctx->line_buf, CTSHELL_LINE_BUF_SIZE - 1);
-    ctx->history[idx][CTSHELL_LINE_BUF_SIZE - 1] = '\0';
+    int idx = ctx->history_count % CONFIG_CTSHELL_HISTORY_SIZE;
+    strncpy(ctx->history[idx], ctx->line_buf, CONFIG_CTSHELL_LINE_BUF_SIZE - 1);
+    ctx->history[idx][CONFIG_CTSHELL_LINE_BUF_SIZE - 1] = '\0';
     ctx->history_count++;
     ctx->history_index = ctx->history_count;
 }
 
 static void ctshell_load_history(ctshell_ctx_t *ctx, int index) {
     ctshell_clear_line_view(ctx);
-    strncpy(ctx->line_buf, ctx->history[index], CTSHELL_LINE_BUF_SIZE - 1);
+    strncpy(ctx->line_buf, ctx->history[index], CONFIG_CTSHELL_LINE_BUF_SIZE - 1);
     ctx->line_len = strlen(ctx->line_buf);
     ctx->cur_pos = ctx->line_len;
     ctshell_puts(ctx, ctx->line_buf);
@@ -221,14 +221,14 @@ static int is_trailing_space(const char *str) {
 static void ctshell_tab_complete(ctshell_ctx_t *ctx) {
     if (ctx->line_len == 0) return;
 
-    char buf_copy[CTSHELL_LINE_BUF_SIZE];
+    char buf_copy[CONFIG_CTSHELL_LINE_BUF_SIZE];
     strncpy(buf_copy, ctx->line_buf, sizeof(buf_copy));
-    buf_copy[CTSHELL_LINE_BUF_SIZE - 1] = '\0';
+    buf_copy[CONFIG_CTSHELL_LINE_BUF_SIZE - 1] = '\0';
 
-    char *argv[CTSHELL_MAX_ARGS];
+    char *argv[CONFIG_CTSHELL_MAX_ARGS];
     int argc = 0;
     char *p = buf_copy;
-    while (*p && argc < CTSHELL_MAX_ARGS) {
+    while (*p && argc < CONFIG_CTSHELL_MAX_ARGS) {
         while (*p == ' ') *p++ = '\0';
         if (*p == '\0') break;
         argv[argc++] = p;
@@ -272,14 +272,14 @@ static void ctshell_tab_complete(ctshell_ctx_t *ctx) {
         const char *full_name = last_match->name;
         int full_len = strlen(full_name);
         for (int i = match_len; i < full_len; i++) {
-            if (ctx->line_len < CTSHELL_LINE_BUF_SIZE - 2) {
+            if (ctx->line_len < CONFIG_CTSHELL_LINE_BUF_SIZE - 2) {
                 char c = full_name[i];
                 ctshell_write(ctx, &c, 1);
                 ctx->line_buf[ctx->line_len++] = c;
                 ctx->cur_pos++;
             }
         }
-        if (ctx->line_len < CTSHELL_LINE_BUF_SIZE - 1) {
+        if (ctx->line_len < CONFIG_CTSHELL_LINE_BUF_SIZE - 1) {
             ctshell_write(ctx, " ", 1);
             ctx->line_buf[ctx->line_len++] = ' ';
             ctx->cur_pos++;
@@ -297,7 +297,7 @@ static void ctshell_tab_complete(ctshell_ctx_t *ctx) {
                 }
             }
         }
-        ctshell_puts(ctx, "\r\n" CTSHELL_PROMPT);
+        ctshell_puts(ctx, "\r\n" CONFIG_CTSHELL_PROMPT);
         ctshell_puts(ctx, ctx->line_buf);
     }
 }
@@ -307,10 +307,10 @@ static void ctshell_exec(ctshell_ctx_t *ctx) {
     ctshell_save_history(ctx);
     if (ctx->line_len == 0) return;
     ctshell_expand_vars(ctx);
-    char *argv[CTSHELL_MAX_ARGS];
+    char *argv[CONFIG_CTSHELL_MAX_ARGS];
     int argc = 0;
     char *p = ctx->line_buf;
-    while (*p && argc < CTSHELL_MAX_ARGS) {
+    while (*p && argc < CONFIG_CTSHELL_MAX_ARGS) {
         while (*p == ' ') *p++ = '\0';
         if (*p == '\0') break;
         if (*p == '"') {
@@ -370,7 +370,7 @@ static void ctshell_exec(ctshell_ctx_t *ctx) {
 }
 
 static ctshell_key_event_t dfa_parse(ctshell_ctx_t *ctx, char byte) {
-    for (int i = 0; i < DFA_TABLE_SIZE; i++) {
+    for (int i = 0; i < (int) DFA_TABLE_SIZE; i++) {
         if (dfa_table[i].state == ctx->dfa_state && dfa_table[i].input == byte) {
             ctx->dfa_state = dfa_table[i].next_state;
             return dfa_table[i].evt;
@@ -390,7 +390,7 @@ static ctshell_key_event_t dfa_parse(ctshell_ctx_t *ctx, char byte) {
 }
 
 static void hdl_normal_char(ctshell_ctx_t *ctx, char byte) {
-    if (ctx->line_len < CTSHELL_LINE_BUF_SIZE - 1) {
+    if (ctx->line_len < CONFIG_CTSHELL_LINE_BUF_SIZE - 1) {
         memmove(&ctx->line_buf[ctx->cur_pos + 1], &ctx->line_buf[ctx->cur_pos], ctx->line_len - ctx->cur_pos + 1);
         ctx->line_buf[ctx->cur_pos] = byte;
         ctx->line_len++;
@@ -406,8 +406,8 @@ static void hdl_enter(ctshell_ctx_t *ctx, char byte) {
     ctshell_exec(ctx);
     ctx->line_len = 0;
     ctx->cur_pos = 0;
-    memset(ctx->line_buf, 0, CTSHELL_LINE_BUF_SIZE);
-    ctshell_puts(ctx, "\r\n" CTSHELL_PROMPT);
+    memset(ctx->line_buf, 0, CONFIG_CTSHELL_LINE_BUF_SIZE);
+    ctshell_puts(ctx, "\r\n" CONFIG_CTSHELL_PROMPT);
 }
 
 static void hdl_backspace(ctshell_ctx_t *ctx, char byte) {
@@ -427,7 +427,7 @@ static void hdl_history_prev(ctshell_ctx_t *ctx, char byte) {
 
     if (ctx->history_count > 0 && ctx->history_index > 0) {
         ctx->history_index--;
-        ctshell_load_history(ctx, ctx->history_index % CTSHELL_HISTORY_SIZE);
+        ctshell_load_history(ctx, ctx->history_index % CONFIG_CTSHELL_HISTORY_SIZE);
     }
 }
 
@@ -436,7 +436,7 @@ static void hdl_history_next(ctshell_ctx_t *ctx, char byte) {
 
     if (ctx->history_index < ctx->history_count - 1) {
         ctx->history_index++;
-        ctshell_load_history(ctx, ctx->history_index % CTSHELL_HISTORY_SIZE);
+        ctshell_load_history(ctx, ctx->history_index % CONFIG_CTSHELL_HISTORY_SIZE);
     } else {
         ctx->history_index = ctx->history_count;
         ctshell_clear_line_view(ctx);
@@ -464,10 +464,10 @@ static void hdl_cursor_right(ctshell_ctx_t *ctx, char byte) {
 static void hdl_ctrl_c(ctshell_ctx_t *ctx, char byte) {
     CTSHELL_UNUSED_PARAM(byte);
 
-    ctshell_puts(ctx, "\r\n" CTSHELL_PROMPT);
+    ctshell_puts(ctx, "\r\n" CONFIG_CTSHELL_PROMPT);
     ctx->line_len = 0;
     ctx->cur_pos = 0;
-    memset(ctx->line_buf, 0, CTSHELL_LINE_BUF_SIZE);
+    memset(ctx->line_buf, 0, CONFIG_CTSHELL_LINE_BUF_SIZE);
 }
 
 static void hdl_tab(ctshell_ctx_t *ctx, char byte) {
@@ -506,7 +506,7 @@ void ctshell_input(ctshell_ctx_t *ctx, char byte) {
     if (byte == CTSHELL_KEY_CTRL_C) {
         ctx->sigint = 1;
         if (!ctx->is_executing) {
-            uint16_t next_head = (ctx->fifo_head + 1) % CTSHELL_FIFO_SIZE;
+            uint16_t next_head = (ctx->fifo_head + 1) % CONFIG_CTSHELL_FIFO_SIZE;
             if (next_head != ctx->fifo_tail) {
                 ctx->fifo_buf[ctx->fifo_head] = byte;
                 ctx->fifo_head = next_head;
@@ -515,7 +515,7 @@ void ctshell_input(ctshell_ctx_t *ctx, char byte) {
         return;
     }
 
-    uint16_t next_head = (ctx->fifo_head + 1) % CTSHELL_FIFO_SIZE;
+    uint16_t next_head = (ctx->fifo_head + 1) % CONFIG_CTSHELL_FIFO_SIZE;
     if (next_head != ctx->fifo_tail) {
         ctx->fifo_buf[ctx->fifo_head] = byte;
         ctx->fifo_head = next_head;
@@ -525,7 +525,7 @@ void ctshell_input(ctshell_ctx_t *ctx, char byte) {
 void ctshell_poll(ctshell_ctx_t *ctx) {
     while (ctx->fifo_head != ctx->fifo_tail) {
         char byte = ctx->fifo_buf[ctx->fifo_tail];
-        ctx->fifo_tail = (ctx->fifo_tail + 1) % CTSHELL_FIFO_SIZE;
+        ctx->fifo_tail = (ctx->fifo_tail + 1) % CONFIG_CTSHELL_FIFO_SIZE;
 
         ctshell_handle_byte(ctx, byte);
     }
@@ -536,7 +536,7 @@ void ctshell_init(ctshell_ctx_t *ctx, ctshell_io_t io, void *priv) {
     ctx->io = io;
     ctx->priv = priv;
     g_ctshell_ctx = ctx;
-    ctshell_puts(ctx, "\r\n" CTSHELL_PROMPT);
+    ctshell_puts(ctx, "\r\n" CONFIG_CTSHELL_PROMPT);
 }
 
 void ctshell_delay(ctshell_ctx_t *ctx, uint32_t ms) {
@@ -558,7 +558,7 @@ void ctshell_args_init(ctshell_arg_parser_t *p, int argc, char *argv[]) {
 }
 
 static void _add_arg(ctshell_arg_parser_t *p, const char *flag, const char *key, ctshell_arg_type_t type) {
-    if (p->count >= CTSHELL_MAX_ARGS) return;
+    if (p->count >= CONFIG_CTSHELL_MAX_ARGS) return;
     p->args[p->count].flag = flag;
     p->args[p->count].key = key ? key : flag;
     p->args[p->count].type = type;
@@ -581,7 +581,7 @@ void ctshell_expect_verb(ctshell_arg_parser_t *p, const char *verb_name) {
     _add_arg(p, verb_name, verb_name, CTSHELL_ARG_VERB);
 }
 
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
 void ctshell_expect_double(ctshell_arg_parser_t *p, const char *flag, const char *key) {
     _add_arg(p, flag, key, CTSHELL_ARG_DOUBLE);
 }
@@ -610,7 +610,7 @@ void ctshell_args_parse(ctshell_arg_parser_t *p) {
                     } else if (def->type == CTSHELL_ARG_STR) {
                         def->value.s_val = p->argv[k + 1];
                     }
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
                     else if (def->type == CTSHELL_ARG_DOUBLE) {
                         def->value.d_val = strtod(p->argv[k+1], NULL);
                     }
@@ -645,7 +645,7 @@ int ctshell_get_bool(ctshell_arg_parser_t *p, const char *key) {
     return (d && d->found) ? d->value.b_val : 0;
 }
 
-#ifdef CTSHELL_USE_DOUBLE
+#ifdef CONFIG_CTSHELL_USE_DOUBLE
 double ctshell_get_double(ctshell_arg_parser_t *p, const char *key) {
     ctshell_arg_def_t *d = _find_res(p, key);
     return (d && d->found) ? d->value.d_val : 0.0;
@@ -657,7 +657,7 @@ int ctshell_has(ctshell_arg_parser_t *p, const char *key) {
     return (d && d->found);
 }
 
-#ifdef CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS
 #define CHECK_FS_READY() \
     if (!g_ctshell_ctx || !g_ctshell_ctx->fs_drv) { \
         ctshell_error("Filesystem not initialized.\r\n"); \
@@ -666,7 +666,7 @@ int ctshell_has(ctshell_arg_parser_t *p, const char *key) {
 
 void ctshell_fs_resolve_path(const char *cwd, const char *path, char *out_buf, size_t buf_size) {
     if (!path || !out_buf || buf_size == 0) return;
-    char temp[CTSHELL_FS_PATH_MAX];
+    char temp[CONFIG_CTSHELL_FS_PATH_MAX];
     size_t len = 0;
     if (path[0] == '/') {
         temp[0] = '/';
@@ -721,7 +721,7 @@ void ctshell_fs_init(ctshell_ctx_t *ctx, const ctshell_fs_drv_t *drv) {
 }
 #endif
 
-#ifdef CTSHELL_USE_BUILTIN_CMDS
+#ifdef CONFIG_CTSHELL_USE_BUILTIN_CMDS
 static int cmd_help(int argc, char *argv[]) {
     const ctshell_cmd_t *target_parent = NULL;
     if (argc > 1) {
@@ -737,7 +737,7 @@ static int cmd_help(int argc, char *argv[]) {
     for (; cmd < end; cmd++) {
         if (cmd->attrs & CTSHELL_ATTR_HIDDEN) continue;
         if (cmd->parent == target_parent) {
-            char name_buf[CTSHELL_CMD_NAME_MAX_LEN];
+            char name_buf[CONFIG_CTSHELL_CMD_NAME_MAX_LEN];
             if (ctshell_is_menu(cmd)) {
                 snprintf(name_buf, sizeof(name_buf), "%s/", cmd->name);
             } else {
@@ -751,6 +751,7 @@ static int cmd_help(int argc, char *argv[]) {
 CTSHELL_EXPORT_CMD(help, cmd_help, "Show help info", CTSHELL_ATTR_NONE);
 
 static int cmd_clear(int argc, char *argv[]) {
+    CTSHELL_UNUSED_PARAM(argv);
     if (argc != 1) {
         ctshell_printf("Usage: clear\r\n");
         return 0;
@@ -761,7 +762,7 @@ static int cmd_clear(int argc, char *argv[]) {
 CTSHELL_EXPORT_CMD(clear, cmd_clear, "Clear screen", CTSHELL_ATTR_NONE);
 
 static int cmd_echo(int argc, char *argv[]) {
-#ifndef CTSHELL_USE_FS
+#ifndef CONFIG_CTSHELL_USE_FS
     for (int i = 1; i < argc; i++) {
         ctshell_printf("%s ", argv[i]);
     }
@@ -793,7 +794,7 @@ static int cmd_echo(int argc, char *argv[]) {
         ctshell_printf("echo: syntax error near unexpected token 'newline'\r\n");
         return 0;
     }
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     const char *target = argv[redirect_idx + 1];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, target, path, sizeof(path));
     int open_flag = append_mode ? CTSHELL_O_APPEND : CTSHELL_O_TRUNC;
@@ -822,7 +823,7 @@ CTSHELL_EXPORT_CMD(echo, cmd_echo, "Echo args to stdout or file", CTSHELL_ATTR_N
 static int cmd_set(int argc, char *argv[]) {
     if (!g_ctshell_ctx) return -1;
     if (argc == 1) {
-        for (int i = 0; i < CTSHELL_VAR_MAX_COUNT; i++) {
+        for (int i = 0; i < CONFIG_CTSHELL_VAR_MAX_COUNT; i++) {
             if (g_ctshell_ctx->vars[i].used) {
                 ctshell_printf("%s=%s\r\n", g_ctshell_ctx->vars[i].name, g_ctshell_ctx->vars[i].value);
             }
@@ -852,10 +853,10 @@ static int cmd_unset(int argc, char *argv[]) {
 }
 CTSHELL_EXPORT_CMD(unset, cmd_unset, "Unset a variable", CTSHELL_ATTR_NONE);
 
-#ifdef CTSHELL_USE_FS
+#ifdef CONFIG_CTSHELL_USE_FS
 static int cmd_ls(int argc, char *argv[]) {
     CHECK_FS_READY();
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     const char *target = (argc > 1) ? argv[1] : ".";
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, target, path, sizeof(path));
     void *dir;
@@ -885,12 +886,12 @@ static int cmd_cd(int argc, char *argv[]) {
         return 0;
     }
     const char *target = (argc == 2) ? argv[1] : "/";
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, target, path, sizeof(path));
     ctshell_dirent_t info;
     if (g_ctshell_ctx->fs_drv->stat(path, &info) == 0) {
         if (info.type == CTSHELL_FS_TYPE_DIR) {
-            strncpy(g_ctshell_ctx->cwd, path, CTSHELL_FS_PATH_MAX - 1);
+            strncpy(g_ctshell_ctx->cwd, path, CONFIG_CTSHELL_FS_PATH_MAX - 1);
         } else {
             ctshell_printf("cd: '%s': Not a directory\r\n", path);
         }
@@ -914,7 +915,7 @@ static int cmd_cat(int argc, char *argv[]) {
         ctshell_printf("Usage: cat <file>\r\n");
         return 0;
     }
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, argv[1], path, sizeof(path));
     int fd = g_ctshell_ctx->fs_drv->open(path, 0);
     if (fd < 0) {
@@ -939,7 +940,7 @@ static int cmd_mkdir(int argc, char *argv[]) {
         ctshell_printf("Usage: mkdir <path>\r\n");
         return 0;
     }
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, argv[1], path, sizeof(path));
 
     if (g_ctshell_ctx->fs_drv->mkdir(path) != 0) {
@@ -955,7 +956,7 @@ static int cmd_rm(int argc, char *argv[]) {
         ctshell_printf("Usage: rm <path>\r\n");
         return 0;
     }
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, argv[1], path, sizeof(path));
 
     if (g_ctshell_ctx->fs_drv->unlink(path) != 0) {
@@ -971,7 +972,7 @@ static int cmd_touch(int argc, char *argv[]) {
         ctshell_printf("Usage: touch <file>\r\n");
         return 0;
     }
-    char path[CTSHELL_FS_PATH_MAX];
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
     ctshell_fs_resolve_path(g_ctshell_ctx->cwd, argv[1], path, sizeof(path));
 
     int fd = g_ctshell_ctx->fs_drv->open(path, 1);

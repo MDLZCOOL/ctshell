@@ -22,7 +22,7 @@ STM32
 
 2. 添加文件
 
-将下载的仓库复制到你的工程目录，并添加到编译构建系统中，即将支持CMake。
+将下载的仓库复制到你的工程目录，并添加到编译构建系统中，推荐使用CMake，直接set需要的功能，并引入仓库中的CMakeLists.txt，添加${ctshell_srcs}、${ctshell_incs}、${CTSHELL_DEFINITIONS}即可。
 
 3. 实现 IO 接口
 

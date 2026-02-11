@@ -15,7 +15,7 @@ Ctshell is a low-overhead shell designed specifically for resource-constrained e
 * Built-in Argument Parser: Includes a strictly-typed argument parser to easily handle flags (bool), integers, strings, and verbs within custom commands.
 * ANSI Escape Sequence Support: Handles standard VT100/ANSI escape codes for arrow keys and screen control.
 * Filesystem Support: Out-of-box for `FatFS` now, other fs native support will come soon.
-* Command Hierarchy Framework: Supports hierarchical command management, see //////////////////////////.
+* Command Hierarchy Framework: Supports hierarchical command management.
 
 ## Porting
 

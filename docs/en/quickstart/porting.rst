@@ -22,7 +22,7 @@ Prepare a project capable of sending and receiving data via UART.
 
 2. Add Files
 
-Copy downloaded repo to your project directory and add them to your build system, CMake support will come soon.
+Copy downloaded repo to your project directory and add them to your build system. It is recommended to use CMake. Simply set the required functionality and import the CMakeLists.txt file from the repository, adding ${ctshell_srcs}, ${ctshell_incs}, and ${CTSHELL_DEFINITIONS}, then enjoy.
 
 3. Implement IO Interface
 

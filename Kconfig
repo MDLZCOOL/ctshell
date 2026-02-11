@@ -1,0 +1,161 @@
+menu "Ctshell Configuration"
+
+config CTSHELL_USE_KCONFIG
+    bool
+    default y
+
+menu "Feature Options"
+
+config CTSHELL_USE_BUILTIN_CMDS
+    bool "Enable builtin commands"
+    default y
+
+config CTSHELL_USE_DOUBLE
+    bool "Enable double support"
+    default n
+
+config CTSHELL_USE_FS
+    bool "Enable filesystem extension"
+    default n
+
+config CTSHELL_USE_FS_FATFS
+    bool "Enable FatFs backend"
+    depends on CTSHELL_USE_FS
+    default n
+
+endmenu
+
+menu "Resource Limits"
+
+config CTSHELL_CMD_NAME_MAX_LEN
+    int "Command name max length"
+    default 16
+    range 4 64
+
+config CTSHELL_LINE_BUF_SIZE
+    int "Command line buffer size"
+    default 128
+    range 32 1024
+
+config CTSHELL_MAX_ARGS
+    int "Maximum argument count"
+    default 16
+    range 1 64
+
+config CTSHELL_HISTORY_SIZE
+    int "History buffer entries"
+    default 5
+    range 0 32
+
+config CTSHELL_VAR_MAX_COUNT
+    int "Maximum variable count"
+    default 8
+    range 0 64
+
+config CTSHELL_VAR_NAME_LEN
+    int "Variable name max length"
+    default 16
+    range 4 64
+
+config CTSHELL_VAR_VAL_LEN
+    int "Variable value max length"
+    default 32
+    range 8 256
+
+config CTSHELL_FIFO_SIZE
+    int "Input FIFO size"
+    default 128
+    range 32 512
+
+config CTSHELL_PROMPT
+    string "Shell prompt string"
+    default "ctsh>> "
+
+config CTSHELL_FS_PATH_MAX
+    int "Filesystem path max length"
+    depends on CTSHELL_USE_FS
+    default 256
+
+config CTSHELL_FS_NAME_MAX
+    int "Filesystem filename max length"
+    depends on CTSHELL_USE_FS
+    default 64
+
+endmenu
+
+menu "Port Options"
+
+choice CTSHELL_PORT_SELECT
+    prompt "Select Platform Port"
+    default CTSHELL_PORT_CUSTOM
+
+config CTSHELL_PORT_CUSTOM
+    bool
+    prompt "CUSTOM (Implement it yourself)"
+
+config CTSHELL_PORT_ESP32
+    bool
+    prompt "ESP-IDF"
+
+config CTSHELL_PORT_STM32
+    bool
+    prompt "STM32 HAL"
+
+config CTSHELL_PORT_WINDOWS
+    bool
+    prompt "Windows(for test use)"
+
+endchoice
+
+if CTSHELL_PORT_ESP32
+menu "ESP-IDF Port Configuration"
+
+config CTSHELL_ESP32_UART_NUM
+    int "UART port number"
+    default 2
+
+config CTSHELL_ESP32_UART_TX
+    int "UART TX pin"
+    default 9
+
+config CTSHELL_ESP32_UART_RX
+    int "UART RX pin"
+    default 10
+
+config CTSHELL_ESP32_UART_BAUD
+    int "UART baud rate"
+    default 115200
+
+config CTSHELL_ESP32_RX_BUF_SIZE
+    int "UART RX buffer size"
+    default 1024
+    range 128 4096
+
+config CTSHELL_ESP32_RX_TASK_STACK
+    int "RX task stack size"
+    default 2048
+
+config CTSHELL_ESP32_TASK_STACK
+    int "Shell task stack size"
+    default 4096
+
+config CTSHELL_ESP32_TASK_PRIO
+    int "Shell task priority"
+    default 5
+endmenu
+endif
+
+if CTSHELL_PORT_STM32
+menu "STM32 HAL Port Configuration"
+comment "No specific configuration for STM32 HAL Port"
+endmenu
+endif
+
+if CTSHELL_PORT_WINDOWS
+menu "Windows Port Configuration"
+comment "No specific configuration for Windows Port"
+endmenu
+endif
+
+endmenu
+endmenu
