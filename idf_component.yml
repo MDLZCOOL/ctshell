@@ -1,0 +1,10 @@
+version: "1.0.0"
+description: "Ctshell is a low-overhead shell support filesystem, group command, argument parser and environment variable designed for embedded systems | 一款支持文件系统、分组命令、参数解析器、环境变量的低开销嵌入式Shell工具"
+tags:
+  - shell
+  - debug
+  - tool
+  - cli
+url: https://github.com/MDLZCOOL/ctshell
+repository: https://github.com/MDLZCOOL/ctshell.git
+documentation: https://ctshell.readthedocs.io

@@ -6,7 +6,7 @@ This guide will help you port ctshell to different hardware platforms.
 ESP32
 -------
 
-Coming soon to the ``idf-registry`` component library.
+Available at `idf registry <https://components.espressif.com/components/mdlzcool/ctshell>`_.
 
 STM32
 -------

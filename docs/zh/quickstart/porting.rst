@@ -6,7 +6,7 @@
 ESP32
 -------
 
-即将上线 ``idf-registry`` 组件库。
+已上线 `idf registry <https://components.espressif.com/components/mdlzcool/ctshell>`_.
 
 STM32
 -------

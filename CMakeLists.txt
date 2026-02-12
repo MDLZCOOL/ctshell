@@ -6,6 +6,10 @@ set(ctshell_incs
         "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
+if(ESP_PLATFORM)
+    set(CONFIG_CTSHELL_PORT_ESP32 1)
+endif()
+
 if(CONFIG_CTSHELL_PORT_WINDOWS)
     list(APPEND ctshell_srcs
             "${CMAKE_CURRENT_SOURCE_DIR}/port/windows/ctshell_windows.c"
