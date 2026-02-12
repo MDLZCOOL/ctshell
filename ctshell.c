@@ -311,9 +311,11 @@ static void ctshell_tab_complete(ctshell_ctx_t *ctx) {
     }
 }
 
-static void ctshell_exec(ctshell_ctx_t *ctx) {
+static void ctshell_exec(ctshell_ctx_t *ctx, int save_history) {
     ctx->sigint = 0;
-    ctshell_save_history(ctx);
+    if (save_history) {
+        ctshell_save_history(ctx);
+    }
     if (ctx->line_len == 0) return;
     ctshell_expand_vars(ctx);
     char *argv[CONFIG_CTSHELL_MAX_ARGS];
@@ -412,7 +414,7 @@ static void hdl_normal_char(ctshell_ctx_t *ctx, char byte) {
 static void hdl_enter(ctshell_ctx_t *ctx, char byte) {
     CTSHELL_UNUSED_PARAM(byte);
 
-    ctshell_exec(ctx);
+    ctshell_exec(ctx, 1);
     ctx->line_len = 0;
     ctx->cur_pos = 0;
     memset(ctx->line_buf, 0, CONFIG_CTSHELL_LINE_BUF_SIZE);
@@ -852,6 +854,29 @@ static int cmd_set(int argc, char *argv[]) {
 }
 CTSHELL_EXPORT_CMD(set, cmd_set, "Set or list variables", CTSHELL_ATTR_NONE);
 
+static int ctshell_exec_line(ctshell_ctx_t *ctx, const char *line) {
+    if (!ctx || !line) {
+        return -1;
+    }
+
+    char line_buf_backup[CONFIG_CTSHELL_LINE_BUF_SIZE];
+    memcpy(line_buf_backup, ctx->line_buf, sizeof(line_buf_backup));
+    int line_len_backup = ctx->line_len;
+    int cur_pos_backup = ctx->cur_pos;
+
+    strncpy(ctx->line_buf, line, CONFIG_CTSHELL_LINE_BUF_SIZE - 1);
+    ctx->line_buf[CONFIG_CTSHELL_LINE_BUF_SIZE - 1] = '\0';
+    ctx->line_len = strlen(ctx->line_buf);
+    ctx->cur_pos = ctx->line_len;
+
+    ctshell_exec(ctx, 0);
+
+    memcpy(ctx->line_buf, line_buf_backup, sizeof(line_buf_backup));
+    ctx->line_len = line_len_backup;
+    ctx->cur_pos = cur_pos_backup;
+    return 0;
+}
+
 static int cmd_unset(int argc, char *argv[]) {
     if (!g_ctshell_ctx || argc != 2) {
         ctshell_printf("Usage: unset <NAME>\r\n");
@@ -993,5 +1018,62 @@ static int cmd_touch(int argc, char *argv[]) {
     return 0;
 }
 CTSHELL_EXPORT_CMD(touch, cmd_touch, "Create empty file", CTSHELL_ATTR_NONE);
+
+static int cmd_sh(int argc, char *argv[]) {
+    CHECK_FS_READY();
+    if (argc != 2) {
+        ctshell_printf("Usage: sh <script.sh>\r\n");
+        return 0;
+    }
+
+    char path[CONFIG_CTSHELL_FS_PATH_MAX];
+    ctshell_fs_resolve_path(g_ctshell_ctx->cwd, argv[1], path, sizeof(path));
+
+    int fd = g_ctshell_ctx->fs_drv->open(path, 0);
+    if (fd < 0) {
+        ctshell_printf("sh: cannot open '%s'\r\n", path);
+        return 0;
+    }
+
+    char line[CONFIG_CTSHELL_LINE_BUF_SIZE];
+    int line_len = 0;
+    char ch;
+    int bytes;
+
+    while ((bytes = g_ctshell_ctx->fs_drv->read(fd, &ch, 1)) == 1) {
+        ctshell_check_abort(g_ctshell_ctx);
+
+        if (ch == '\r') {
+            continue;
+        }
+        if (ch == '\n') {
+            line[line_len] = '\0';
+            if (line_len > 0 && line[0] != '#') {
+                ctshell_exec_line(g_ctshell_ctx, line);
+            }
+            line_len = 0;
+            continue;
+        }
+
+        if (line_len < CONFIG_CTSHELL_LINE_BUF_SIZE - 1) {
+            line[line_len++] = ch;
+        } else {
+            ctshell_printf("sh: line too long in '%s'\r\n", path);
+            g_ctshell_ctx->fs_drv->close(fd);
+            return 0;
+        }
+    }
+
+    if (line_len > 0) {
+        line[line_len] = '\0';
+        if (line[0] != '#') {
+            ctshell_exec_line(g_ctshell_ctx, line);
+        }
+    }
+
+    g_ctshell_ctx->fs_drv->close(fd);
+    return 0;
+}
+CTSHELL_EXPORT_CMD(sh, cmd_sh, "Run commands from a shell script", CTSHELL_ATTR_NONE);
 #endif
 #endif
