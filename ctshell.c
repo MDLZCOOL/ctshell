@@ -161,6 +161,15 @@ static int ctshell_expand_vars(ctshell_ctx_t *ctx) {
 
 static void ctshell_save_history(ctshell_ctx_t *ctx) {
     if (ctx->line_len == 0) return;
+
+    if (ctx->history_count > 0) {
+        int last_idx = (ctx->history_count - 1) % CONFIG_CTSHELL_HISTORY_SIZE;
+        if (strcmp(ctx->history[last_idx], ctx->line_buf) == 0) {
+            ctx->history_index = ctx->history_count;
+            return;
+        }
+    }
+
     int idx = ctx->history_count % CONFIG_CTSHELL_HISTORY_SIZE;
     strncpy(ctx->history[idx], ctx->line_buf, CONFIG_CTSHELL_LINE_BUF_SIZE - 1);
     ctx->history[idx][CONFIG_CTSHELL_LINE_BUF_SIZE - 1] = '\0';
