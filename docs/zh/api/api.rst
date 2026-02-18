@@ -243,7 +243,7 @@ CTSHELL_EXPORT_CMD
             ctshell_printf("Hello World!\r\n");
             return 0;
         }
-        CTSHELL_EXPORT_CMD(hello, cmd_hello, "Print hello message", CTSHELL_CMD_ATTR_NONE);
+        CTSHELL_EXPORT_CMD(hello, cmd_hello, "Print hello message", CTSHELL_ATTR_NONE);
 
 CTSHELL_EXPORT_CMD
 ^^^^^^^
