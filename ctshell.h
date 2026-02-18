@@ -222,7 +222,6 @@ typedef struct ctshell_cmd_t {
     }
 
 #define CTSHELL_EXPORT_SUBCMD(_parent, _name, _func, _desc) \
-    extern const ctshell_cmd_t __ctshell_cmd_##_parent; \
     static const ctshell_cmd_t __ctshell_cmd_##_parent##_##_name \
     CTSHELL_SECTION("ctshell_cmd_section") \
     CTSHELL_USED \
