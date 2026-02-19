@@ -57,7 +57,7 @@ if(ESP_PLATFORM)
     idf_component_register(
             SRCS ${ctshell_srcs}
             INCLUDE_DIRS ${ctshell_incs}
-            REQUIRES driver esp_timer freertos log
+            REQUIRES driver esp_timer freertos esp_driver_uart
             LDFRAGMENTS "${CMAKE_CURRENT_SOURCE_DIR}/port/esp32/linker.lf"
     )
 

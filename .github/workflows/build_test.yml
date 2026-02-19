@@ -1,0 +1,27 @@
+name: Build Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_espressif:
+    strategy:
+      matrix:
+        idf_ver: ["latest"]
+    runs-on: ubuntu-latest
+    container: espressif/idf:${{ matrix.idf_ver }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Build with espressif idf ${{ matrix.idf_ver }}
+        shell: bash
+        run: |
+          . ${IDF_PATH}/export.sh
+          pip install idf-component-manager ruamel.yaml idf-build-apps --upgrade
+          idf-build-apps build -p ./test/espressif --recursive --target esp32s3
