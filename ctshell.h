@@ -18,6 +18,16 @@ extern "C" {
 #define ctshell_error(fmt, ...)   ctshell_printf("Error: " fmt "\r\n", ##__VA_ARGS__)
 #define CTSHELL_UNUSED_PARAM(x) ((void)(x))
 
+/* align a pointer at 16, 32 or 64 bits, with floor-like rounding */
+#define ALIGN16(x) ((void*)(((uintptr_t)(x)) & ~(uintptr_t)0x1))
+#define ALIGN32(x) ((void*)(((uintptr_t)(x)) & ~(uintptr_t)0x3))
+#define ALIGN64(x) ((void*)(((uintptr_t)(x)) & ~(uintptr_t)0x7))
+
+/* align a pointer at 16, 32 or 64 bits, with ceil-like rounding */
+#define ALIGN16SUP(x) ((void*)((((uintptr_t)(x)) + 0x1) & ~(uintptr_t)0x1))
+#define ALIGN32SUP(x) ((void*)((((uintptr_t)(x)) + 0x3) & ~(uintptr_t)0x3))
+#define ALIGN64SUP(x) ((void*)((((uintptr_t)(x)) + 0x7) & ~(uintptr_t)0x7))
+
 /**
  * @brief Shell IO interface.
  */

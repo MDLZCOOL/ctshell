@@ -18,8 +18,8 @@ extern const ctshell_cmd_t Image$$CtshellCmdSection$$Limit;
 #elif defined(__GNUC__) || defined(__clang__)
 extern const ctshell_cmd_t __start_ctshell_cmd_section;
 extern const ctshell_cmd_t __stop_ctshell_cmd_section;
-#define CMD_START (&__start_ctshell_cmd_section)
-#define CMD_END   (&__stop_ctshell_cmd_section)
+#define CMD_START ((const ctshell_cmd_t *)ALIGN32SUP(&__start_ctshell_cmd_section))
+#define CMD_END   ((const ctshell_cmd_t *)ALIGN32SUP(&__stop_ctshell_cmd_section))
 #endif
 
 static ctshell_ctx_t *g_ctshell_ctx = NULL;
