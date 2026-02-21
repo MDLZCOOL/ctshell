@@ -29,25 +29,17 @@ static uint32_t shell_get_tick(void) {
     return (uint32_t) (esp_timer_get_time() / 1000ULL);
 }
 
-static void shell_rx_task(void *arg) {
+static void shell_task(void *arg) {
     ctshell_esp32_priv_t *obj = arg;
     uint8_t ch;
 
     while (1) {
-        int len = uart_read_bytes(obj->uart_num, &ch, 1, portMAX_DELAY);
+        int len = uart_read_bytes(obj->uart_num, &ch, 1, pdMS_TO_TICKS(5));
 
         if (len > 0) {
             ctshell_input(&obj->ctx, ch);
         }
-    }
-}
-
-static void shell_task(void *arg) {
-    ctshell_esp32_priv_t *obj = arg;
-
-    while (1) {
         ctshell_poll(&obj->ctx);
-        vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
 
@@ -80,6 +72,5 @@ void ctshell_esp32_init(void) {
             };
     ctshell_init(&priv.ctx, io, &priv);
 
-    xTaskCreate(shell_rx_task, "ctshell_rx", CONFIG_CTSHELL_ESP32_RX_TASK_STACK, &priv, 5, NULL);
     xTaskCreate(shell_task, "ctshell", CONFIG_CTSHELL_ESP32_TASK_STACK, &priv, CONFIG_CTSHELL_ESP32_TASK_PRIO, NULL);
 }

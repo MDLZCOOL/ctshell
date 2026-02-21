@@ -131,10 +131,6 @@ config CTSHELL_ESP32_RX_BUF_SIZE
     default 1024
     range 128 4096
 
-config CTSHELL_ESP32_RX_TASK_STACK
-    int "RX task stack size"
-    default 2048
-
 config CTSHELL_ESP32_TASK_STACK
     int "Shell task stack size"
     default 4096
