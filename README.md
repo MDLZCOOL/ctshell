@@ -1,6 +1,6 @@
 # ctshell
 
-[![readthedocs](https://img.shields.io/readthedocs/ctshell)](https://ctshell.readthedocs.io/en/latest/) [![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE)
+[![readthedocs](https://img.shields.io/readthedocs/ctshell)](https://ctshell.readthedocs.io/en/latest/) [![build test](https://github.com/MDLZCOOL/ctshell/actions/workflows/build_test.yml/badge.svg)](https://github.com/MDLZCOOL/ctshell/actions?query=workflow%3A%22Build+Test%22) [![fuzz test](https://github.com/MDLZCOOL/ctshell/actions/workflows/fuzzing.yml/badge.svg)](https://github.com/MDLZCOOL/ctshell/actions?query=workflow%3AFuzzing) [![license](https://img.shields.io/github/license/MDLZCOOL/ctshell)](https://github.com/MDLZCOOL/ctshell/blob/main/LICENSE)
 
 Ctshell is a low-overhead shell designed specifically for resource-constrained embedded systems.
 

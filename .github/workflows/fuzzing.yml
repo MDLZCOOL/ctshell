@@ -1,0 +1,50 @@
+name: Fuzzing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  fuzz_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm cmake ninja-build
+
+      - name: Configure fuzz target
+        run: |
+          cmake -S . -B build-fuzz -G Ninja \
+            -DCTSHELL_ENABLE_FUZZING=ON \
+            -DCMAKE_C_COMPILER=clang
+
+      - name: Build fuzz target
+        run: cmake --build build-fuzz --target ctshell_fuzz
+
+      - name: Run fuzz and collect profile
+        run: |
+          LLVM_PROFILE_FILE="ctshell.profraw" ./build-fuzz/ctshell_fuzz \
+            -max_total_time=599
+
+      - name: Generate coverage report
+        run: |
+          llvm-profdata merge -sparse ctshell.profraw -o ctshell.profdata
+          llvm-cov show ./build-fuzz/ctshell_fuzz \
+            -instr-profile=ctshell.profdata \
+            -format=html \
+            -output-dir=coverage_report
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-coverage-report.zip
+          path: coverage_report
