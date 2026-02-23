@@ -65,7 +65,7 @@ int cmd_wifi_connect(int argc, char *argv[]) {
 CTSHELL_EXPORT_SUBCMD(net_wifi, connect, cmd_wifi_connect, "Connect to AP");
 
 void app_main(void) {
-    ctshell_esp32_init();
+    ctshell_port_esp32_init();
 
     for (;;) {
         vTaskDelay(portMAX_DELAY);

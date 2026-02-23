@@ -196,17 +196,61 @@ ctshell_check_abort
 文件系统 API
 -------
 
-ctshell_fatfs_init
+ctshell_fs_fatfs_init
 ^^^^^^
 初始化 ctshell 对 ``FatFS`` 文件系统的支持。应当在ctshell初始化完成之后调用。
 
 .. code-block:: c
 
-    void ctshell_fatfs_init(ctshell_ctx_t *ctx, ctshell_fs_t *fs);
+    void ctshell_fs_fatfs_init(ctshell_ctx_t *ctx);
 
 :参数:
     * ``ctx``: Shell 上下文指针。
-    * ``fs``: 文件系统接口结构体指针。
+
+ctshell_fs_posix_init
+^^^^^^
+初始化 ctshell 对 ``POSIX`` 文件系统的支持。应当在ctshell初始化完成之后调用。
+
+.. code-block:: c
+
+    void ctshell_fs_posix_init(ctshell_ctx_t *ctx);
+
+:参数:
+    * ``ctx``: Shell 上下文指针。
+
+ctshell_fs_windows_init
+^^^^^^
+初始化 ctshell 对 ``Win32`` 文件系统的支持。应当在ctshell初始化完成之后调用。
+
+.. code-block:: c
+
+    void ctshell_fs_windows_init(ctshell_ctx_t *ctx);
+
+:参数:
+    * ``ctx``: Shell 上下文指针。
+
+ctshell_fs_littlefs_init
+^^^^^^
+初始化 ctshell 对 ``littlefs`` 文件系统的支持。应当在ctshell初始化完成之后调用。
+
+.. code-block:: c
+
+    void ctshell_fs_littlefs_init(ctshell_ctx_t *ctx, lfs_t *lfs);
+
+:参数:
+    * ``ctx``: Shell 上下文指针。
+    * ``lfs``: LittleFS 上下文指针。
+
+ctshell_fs_arduino_sd_init
+^^^^^^
+初始化 ctshell 对 ``Arduino SD`` 文件系统的支持。应当在ctshell初始化完成之后调用。
+
+.. code-block:: c
+
+    void ctshell_fs_arduino_sd_init(ctshell_ctx_t *ctx);
+
+:参数:
+    * ``ctx``: Shell 上下文指针。
 
 命令注册 API
 -------

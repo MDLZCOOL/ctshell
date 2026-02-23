@@ -14,7 +14,7 @@ Ctshell is a low-overhead shell designed specifically for resource-constrained e
 * Signal Handling (SIGINT): Implements setjmp/longjmp logic to abort long-running commands via `Ctrl+C`.
 * Built-in Argument Parser: Includes a strictly-typed argument parser to easily handle flags (bool), integers, strings, and verbs within custom commands.
 * ANSI Escape Sequence Support: Handles standard VT100/ANSI escape codes for arrow keys and screen control.
-* Filesystem Support: Out-of-box for `FatFS` now, other fs native support will come soon.
+* Filesystem Support: Out-of-box for FatFS, POSIX, Windows, littlefs, and Arduino SD.
 * Command Hierarchy Framework: Supports hierarchical command management.
 
 ## Porting

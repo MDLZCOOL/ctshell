@@ -305,6 +305,15 @@ extern void ctshell_fs_fatfs_init(ctshell_ctx_t *ctx);
 #ifdef CONFIG_CTSHELL_USE_FS_POSIX
 extern void ctshell_fs_posix_init(ctshell_ctx_t *ctx);
 #endif
+#ifdef CONFIG_CTSHELL_USE_FS_LITTLEFS
+extern void ctshell_fs_littlefs_init(ctshell_ctx_t *ctx, lfs_t *lfs);
+#endif
+#ifdef CONFIG_CTSHELL_USE_FS_WINDOWS
+extern void ctshell_fs_windows_init(ctshell_ctx_t *ctx);
+#endif
+#ifdef CONFIG_CTSHELL_USE_FS_ARDUINO_SD
+extern void ctshell_fs_arduino_sd_init(ctshell_ctx_t *ctx);
+#endif
 #endif
 
 #ifdef __cplusplus

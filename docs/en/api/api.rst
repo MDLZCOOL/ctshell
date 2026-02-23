@@ -196,17 +196,61 @@ Check if a termination signal (Ctrl+C) has been received.
 Filesystem API
 -------
 
-ctshell_fatfs_init
+ctshell_fs_fatfs_init
 ^^^^^^
-Initialize ctshell support for the FatFS file system. This should be called after ctshell initialization.
+Initialize ctshell support for the ``FatFS`` file system. This should be called after ctshell initialization.
 
 .. code-block:: c
 
-    void ctshell_fatfs_init(ctshell_ctx_t *ctx, ctshell_fs_t *fs);
+    void ctshell_fs_fatfs_init(ctshell_ctx_t *ctx);
 
 :Parameters:
     * ``ctx``: A pointer to the Shell context.
-    * ``fs``: A pointer to the file system interface structure.
+
+ctshell_fs_posix_init
+^^^^^^
+Initialize ctshell support for the ``POSIX`` file system. This should be called after ctshell initialization.
+
+.. code-block:: c
+
+    void ctshell_fs_posix_init(ctshell_ctx_t *ctx);
+
+:Parameters:
+    * ``ctx``: A pointer to the Shell context.
+
+ctshell_fs_windows_init
+^^^^^^
+Initialize ctshell support for the ``Win32`` file system. This should be called after ctshell initialization.
+
+.. code-block:: c
+
+    void ctshell_fs_windows_init(ctshell_ctx_t *ctx);
+
+:Parameters:
+    * ``ctx``: A pointer to the Shell context.
+
+ctshell_fs_littlefs_init
+^^^^^^
+Initialize ctshell support for the ``littlefs`` file system. This should be called after ctshell initialization.
+
+.. code-block:: c
+
+    void ctshell_fs_littlefs_init(ctshell_ctx_t *ctx, lfs_t *lfs);
+
+:Parameters:
+    * ``ctx``: A pointer to the Shell context.
+    * ``lfs``: A pointer to the LittleFS instance.
+
+ctshell_fs_arduino_sd_init
+^^^^^^
+Initialize ctshell support for the ``Arduino SD`` file system. This should be called after ctshell initialization.
+
+.. code-block:: c
+
+    void ctshell_fs_arduino_sd_init(ctshell_ctx_t *ctx);
+
+:Parameters:
+    * ``ctx``: A pointer to the Shell context.
 
 Command Register API
 -------

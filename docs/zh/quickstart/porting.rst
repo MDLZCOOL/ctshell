@@ -70,7 +70,7 @@ stm32 使用中断接收示例：
         HAL_Init();
         MX_USART1_UART_Init();
 
-        ctshell_stm32_init(&ctx, &huart1);
+        ctshell_port_stm32_init(&ctx, &huart1);
 
         while (1) {
             ctshell_poll(&ctx);
@@ -82,7 +82,7 @@ RTOS 环境: 建议创建一个独立的任务来运行 Shell。
 .. code-block:: c
 
     void shell_task(void *argument) {
-        ctshell_stm32_init(&ctx, &huart1);
+        ctshell_port_stm32_init(&ctx, &huart1);
 
         while (1) {
             ctshell_poll(&ctx);

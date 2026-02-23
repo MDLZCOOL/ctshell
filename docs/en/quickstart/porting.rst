@@ -70,7 +70,7 @@ Bare Metal Environment: Initialize the Shell after initializing the UART in the 
         HAL_Init();
         MX_USART1_UART_Init();
 
-        ctshell_stm32_init(&ctx, &huart1);
+        ctshell_port_stm32_init(&ctx, &huart1);
 
         while (1) {
             ctshell_poll(&ctx);
@@ -82,7 +82,7 @@ RTOS Environment: It is recommended to create a dedicated task to run the Shell.
 .. code-block:: c
 
     void shell_task(void *argument) {
-        ctshell_stm32_init(&ctx, &huart1);
+        ctshell_port_stm32_init(&ctx, &huart1);
 
         while (1) {
             ctshell_poll(&ctx);

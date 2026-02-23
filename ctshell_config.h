@@ -13,6 +13,9 @@
 //#define CONFIG_CTSHELL_USE_FS
 //#define CONFIG_CTSHELL_USE_FS_FATFS
 //#define CONFIG_CTSHELL_USE_FS_POSIX
+//#define CONFIG_CTSHELL_USE_FS_LITTLEFS
+//#define CONFIG_CTSHELL_USE_FS_WINDOWS
+//#define CONFIG_CTSHELL_USE_FS_ARDUINO_SD
 
 /* ================= Resource Limits ================= */
 #define CONFIG_CTSHELL_CMD_NAME_MAX_LEN    16
