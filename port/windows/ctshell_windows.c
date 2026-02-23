@@ -32,7 +32,7 @@ static uint32_t windows_get_tick(void) {
     return GetTickCount();
 }
 
-int ctshell_windows_init(ctshell_ctx_t *ctx) {
+int ctshell_port_windows_init(ctshell_ctx_t *ctx) {
     if (ctx == NULL) {
         return -1;
     }
@@ -58,7 +58,7 @@ int ctshell_windows_init(ctshell_ctx_t *ctx) {
     return 0;
 }
 
-void ctshell_windows_deinit(ctshell_ctx_t *ctx) {
+void ctshell_port_windows_deinit(ctshell_ctx_t *ctx) {
     UNREFERENCED_PARAMETER(ctx);
     if (priv.hStdin != INVALID_HANDLE_VALUE) {
         SetConsoleMode(priv.hStdin, priv.dwOldMode);
@@ -70,7 +70,7 @@ void ctshell_windows_deinit(ctshell_ctx_t *ctx) {
     g_ctx = NULL;
 }
 
-void ctshell_windows_process_input(ctshell_ctx_t *ctx) {
+void ctshell_port_windows_process_input(ctshell_ctx_t *ctx) {
     if (ctx == NULL || ctx != g_ctx) {
         return;
     }

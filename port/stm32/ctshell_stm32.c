@@ -26,7 +26,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     }
 }
 
-void ctshell_stm32_init(ctshell_ctx_t *ctx, UART_HandleTypeDef *huart) {
+void ctshell_port_stm32_init(ctshell_ctx_t *ctx, UART_HandleTypeDef *huart) {
     memset(&priv, 0, sizeof(priv));
     priv.huart = huart;
     g_ctx = ctx;

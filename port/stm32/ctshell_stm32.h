@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void ctshell_stm32_init(ctshell_ctx_t *ctx, UART_HandleTypeDef *huart);
+void ctshell_port_stm32_init(ctshell_ctx_t *ctx, UART_HandleTypeDef *huart);
 
 #ifdef __cplusplus
 }

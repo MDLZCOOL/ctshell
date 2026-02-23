@@ -12,9 +12,9 @@
 extern "C" {
 #endif
 
-int ctshell_windows_init(ctshell_ctx_t *ctx);
-void ctshell_windows_deinit(ctshell_ctx_t *ctx);
-void ctshell_windows_process_input(ctshell_ctx_t *ctx);
+int ctshell_port_windows_init(ctshell_ctx_t *ctx);
+void ctshell_port_windows_deinit(ctshell_ctx_t *ctx);
+void ctshell_port_windows_process_input(ctshell_ctx_t *ctx);
 
 #ifdef __cplusplus
 }

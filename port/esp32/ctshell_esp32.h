@@ -40,7 +40,7 @@ extern "C" {
 #define CONFIG_CTSHELL_ESP32_TASK_PRIO     5
 #endif
 
-void ctshell_esp32_init(void);
+void ctshell_port_esp32_init(void);
 
 #ifdef __cplusplus
 }

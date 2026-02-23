@@ -11,9 +11,9 @@
 extern "C" {
 #endif
 
-int ctshell_posix_init(ctshell_ctx_t *ctx);
-void ctshell_posix_deinit(ctshell_ctx_t *ctx);
-void ctshell_posix_process_input(ctshell_ctx_t *ctx);
+int ctshell_port_posix_init(ctshell_ctx_t *ctx);
+void ctshell_port_posix_deinit(ctshell_ctx_t *ctx);
+void ctshell_port_posix_process_input(ctshell_ctx_t *ctx);
 
 #ifdef __cplusplus
 }

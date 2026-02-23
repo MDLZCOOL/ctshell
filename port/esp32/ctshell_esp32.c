@@ -43,7 +43,7 @@ static void shell_task(void *arg) {
     }
 }
 
-void ctshell_esp32_init(void) {
+void ctshell_port_esp32_init(void) {
     memset(&priv, 0, sizeof(priv));
     priv.uart_num = CONFIG_CTSHELL_ESP32_UART_NUM;
 

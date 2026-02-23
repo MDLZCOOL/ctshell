@@ -37,7 +37,7 @@ static uint32_t posix_get_tick(void) {
     return (ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
 }
 
-int ctshell_posix_init(ctshell_ctx_t *ctx) {
+int ctshell_port_posix_init(ctshell_ctx_t *ctx) {
     if (ctx == NULL) {
         return -1;
     }
@@ -76,13 +76,13 @@ int ctshell_posix_init(ctshell_ctx_t *ctx) {
     return 0;
 }
 
-void ctshell_posix_deinit(ctshell_ctx_t *ctx) {
+void ctshell_port_posix_deinit(ctshell_ctx_t *ctx) {
     (void) ctx;
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &priv.old_termios);
     g_ctx = NULL;
 }
 
-void ctshell_posix_process_input(ctshell_ctx_t *ctx) {
+void ctshell_port_posix_process_input(ctshell_ctx_t *ctx) {
     if (ctx == NULL || ctx != g_ctx) {
         return;
     }
