@@ -23,6 +23,11 @@ config CTSHELL_USE_FS_FATFS
     depends on CTSHELL_USE_FS
     default n
 
+config CTSHELL_USE_FS_POSIX
+    bool "Enable POSIX backend"
+    depends on CTSHELL_USE_FS
+    default n
+
 endmenu
 
 menu "Resource Limits"

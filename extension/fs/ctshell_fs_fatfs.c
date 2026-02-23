@@ -288,7 +288,7 @@ const ctshell_fs_drv_t fatfs_drv = {
 };
 
 extern void ctshell_fs_init(ctshell_ctx_t *ctx, const ctshell_fs_drv_t *drv);
-void ctshell_fatfs_init(ctshell_ctx_t *ctx) {
+void ctshell_fs_fatfs_init(ctshell_ctx_t *ctx) {
     memset(file_pool, 0, sizeof(file_pool));
     mount_fs();
     ctshell_fs_init(ctx, &fatfs_drv);

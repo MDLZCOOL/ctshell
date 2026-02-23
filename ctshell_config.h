@@ -12,6 +12,7 @@
 //#define CONFIG_CTSHELL_USE_DOUBLE
 //#define CONFIG_CTSHELL_USE_FS
 //#define CONFIG_CTSHELL_USE_FS_FATFS
+//#define CONFIG_CTSHELL_USE_FS_POSIX
 
 /* ================= Resource Limits ================= */
 #define CONFIG_CTSHELL_CMD_NAME_MAX_LEN    16

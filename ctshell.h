@@ -300,7 +300,10 @@ double ctshell_get_double(ctshell_arg_parser_t *p, const char *key);
 int ctshell_has(ctshell_arg_parser_t *p, const char *key);
 #ifdef CONFIG_CTSHELL_USE_FS
 #ifdef CONFIG_CTSHELL_USE_FS_FATFS
-extern void ctshell_fatfs_init(ctshell_ctx_t *ctx);
+extern void ctshell_fs_fatfs_init(ctshell_ctx_t *ctx);
+#endif
+#ifdef CONFIG_CTSHELL_USE_FS_POSIX
+extern void ctshell_fs_posix_init(ctshell_ctx_t *ctx);
 #endif
 #endif
 
