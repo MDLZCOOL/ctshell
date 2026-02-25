@@ -8,7 +8,7 @@ set(ctshell_incs
 
 set(CTSHELL_DEFINITIONS "")
 
-option(CTSHELL_ENABLE_FUZZING "Enable libFuzzer based fuzz testing" OFF)
+option(CONFIG_CTSHELL_ENABLE_FUZZING "Enable libFuzzer based fuzz testing" OFF)
 
 if(ESP_PLATFORM)
     set(CONFIG_CTSHELL_PORT_ESP32 1)
@@ -81,9 +81,8 @@ if(ESP_PLATFORM)
 
     target_link_libraries(${COMPONENT_LIB} INTERFACE "-T ${CMAKE_CURRENT_SOURCE_DIR}/port/esp32/ctshell_cmd.ld")
 else()
-    set(CTSHELL_DEFINITIONS ${CTSHELL_DEFINITIONS} CACHE INTERNAL "ctshell definitions")
-
-    if(CTSHELL_ENABLE_FUZZING)
+    if(CONFIG_CTSHELL_ENABLE_FUZZING)
+        list(APPEND CTSHELL_DEFINITIONS "CONFIG_CTSHELL_ENABLE_FUZZING=1")
         if(CMAKE_C_COMPILER_ID MATCHES "Clang")
             set(CTSHELL_FUZZ_TARGET ctshell_fuzz)
             set(CTSHELL_FUZZ_SRC "${CMAKE_CURRENT_SOURCE_DIR}/test/fuzz/ctshell_fuzz.c")
@@ -110,4 +109,6 @@ else()
             message(FATAL_ERROR "Fuzzing requires Clang compiler. Run with: CC=clang cmake ..")
         endif()
     endif()
+
+    set(CTSHELL_DEFINITIONS ${CTSHELL_DEFINITIONS} CACHE INTERNAL "ctshell definitions")
 endif()

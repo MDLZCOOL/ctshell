@@ -458,6 +458,8 @@ Ctshell provides the following built-in commands:
     * Usage: ``set [NAME] [VALUE]``
 5. **unset**: Delete an environment variable.
     * Usage: ``unset [NAME]``
+6. **hexdump**: Display memory contents in hexadecimal and ASCII format.
+    * Usage: ``hexdump <base> <len>``
 
 If file system support is enabled, the following built-in commands are available:
 

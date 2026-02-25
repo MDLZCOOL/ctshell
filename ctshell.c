@@ -887,6 +887,63 @@ static int cmd_unset(int argc, char *argv[]) {
 }
 CTSHELL_EXPORT_CMD(unset, cmd_unset, "Unset a variable", CTSHELL_ATTR_NONE);
 
+static int cmd_hexdump(int argc, char *argv[]) {
+#ifdef CONFIG_CTSHELL_ENABLE_FUZZING
+    // FIXME: remove this from user code
+    return 0;
+#endif
+    if (argc != 3) {
+        ctshell_printf("Usage: hexdump <base> <len>\r\n");
+        return 0;
+    }
+
+    char *end_base = NULL;
+    char *end_len = NULL;
+    uintptr_t base = (uintptr_t) strtoull(argv[1], &end_base, 0);
+    unsigned long length = strtoul(argv[2], &end_len, 0);
+
+    if (!argv[1][0] || !argv[2][0] || *end_base != '\0' || *end_len != '\0') {
+        ctshell_printf("hexdump: invalid base or length\r\n");
+        return 0;
+    }
+    if (length == 0) {
+        return 0;
+    }
+
+    const unsigned char *mem = (const unsigned char *) base;
+    uintptr_t aligned_base = base & ~(uintptr_t) 0x0F;
+    uintptr_t data_end = base + (uintptr_t) length;
+    uintptr_t aligned_end = (data_end + 15U) & ~(uintptr_t) 0x0F;
+
+    for (uintptr_t addr = aligned_base; addr < aligned_end; addr += 16U) {
+        ctshell_printf("%08lX  ", (unsigned long) addr);
+        for (size_t i = 0; i < 16; i++) {
+            uintptr_t cur = addr + i;
+            if (cur < base || cur >= data_end) {
+                ctshell_printf("   ");
+            } else {
+                ctshell_printf("%02X ", mem[cur - base]);
+            }
+            if (i == 7) {
+                ctshell_printf(" ");
+            }
+        }
+        ctshell_printf(" |");
+        for (size_t i = 0; i < 16; i++) {
+            uintptr_t cur = addr + i;
+            if (cur < base || cur >= data_end) {
+                ctshell_printf(" ");
+            } else {
+                unsigned char ch = mem[cur - base];
+                ctshell_printf("%c", isprint(ch) ? ch : '.');
+            }
+        }
+        ctshell_printf("|\r\n");
+    }
+    return 0;
+}
+CTSHELL_EXPORT_CMD(hexdump, cmd_hexdump, "Display memory content in hex format", CTSHELL_ATTR_NONE);
+
 #ifdef CONFIG_CTSHELL_USE_FS
 static int cmd_ls(int argc, char *argv[]) {
     CHECK_FS_READY();

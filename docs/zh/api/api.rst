@@ -458,6 +458,8 @@ Ctshell 提供以下内置命令：
     * 用法: ``set [NAME] [VALUE]``
 5. **unset**: 删除环境变量。
     * 用法: ``unset [NAME]``
+6. **hexdump**: 十六进制转储。
+    * 用法: ``hexdump <base> <len>``
 
 若开启文件系统支持，则下面内置命令可用：
 
