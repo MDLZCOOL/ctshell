@@ -28,17 +28,18 @@ static int cmd_fuzz_complex(int argc, char *argv[]) {
     ctshell_expect_bool(&parser, "-v", "--verbose");
     ctshell_expect_verb(&parser, "start");
     ctshell_expect_verb(&parser, "stop");
-#ifdef CONFIG_CTSHELL_USE_DOUBLE
     ctshell_expect_double(&parser, "-d", "--double");
-#endif
+
     ctshell_args_parse(&parser);
     int i_val = ctshell_get_int(&parser, "-i");
     char *s_val = ctshell_get_str(&parser, "-s");
     int b_val = ctshell_get_bool(&parser, "-v");
+    double d_val = ctshell_get_double(&parser, "-d");
 
     CTSHELL_UNUSED_PARAM(i_val);
     CTSHELL_UNUSED_PARAM(s_val);
     CTSHELL_UNUSED_PARAM(b_val);
+    CTSHELL_UNUSED_PARAM(d_val);
 
     return 0;
 }

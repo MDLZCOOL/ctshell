@@ -25,6 +25,7 @@ jobs:
         run: |
           cmake -S . -B build-fuzz -G Ninja \
             -DCONFIG_CTSHELL_ENABLE_FUZZING=ON \
+            -DCONFIG_CTSHELL_USE_DOUBLE=ON \
             -DCMAKE_C_COMPILER=clang
 
       - name: Build fuzz target
