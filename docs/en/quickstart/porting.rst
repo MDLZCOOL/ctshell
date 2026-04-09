@@ -92,9 +92,17 @@ RTOS Environment: It is recommended to create a dedicated task to run the Shell.
 
 6. Linker Script Modification
 
-    gcc: No need to modify.
+    **GCC (ld.bfd):** No need to modify the linker script.
 
-    MDK-ARM(v5 and v6): Add in scatter file, example:
+    **LLVM/Clang (ld.lld):** If you are using an LLVM-based toolchain (e.g., ST's STM32CubeCLT with arm-clang), the linker script does not need modification either. Simply append the following to the end of your ``CMakeLists.txt``:
+
+    .. code-block:: cmake
+
+        target_link_options(${CMAKE_PROJECT_NAME} PRIVATE ${CTSHELL_LINK_OPTIONS})
+
+    ``${CTSHELL_LINK_OPTIONS}`` is exported by ctshell and automatically adds ``-z nostart-stop-gc`` when an LLVM linker is detected, preventing ``__start_ctshell_cmd_section`` and ``__stop_ctshell_cmd_section`` symbols from being discarded under ``--gc-sections``.
+
+    **MDK-ARM (v5 and v6):** Add in scatter file, example:
 
 .. code-block:: c
 
