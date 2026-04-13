@@ -92,9 +92,17 @@ RTOS 环境: 建议创建一个独立的任务来运行 Shell。
 
 6. 链接脚本修改
 
-    gcc：无需修改。
+    **GCC (ld.bfd)：** 无需修改链接脚本。
 
-    MDK-ARM（v5 and v6）：在scatter file中添加示例如下：
+    **LLVM/Clang (ld.lld)：** 如果你使用的是基于 LLVM 的工具链（如 ST 的 STM32CubeCLT arm-clang），则无需修改链接脚本，只需将以下内容追加到你的 ``CMakeLists.txt`` 末尾即可：
+
+    .. code-block:: cmake
+
+        target_link_options(${CMAKE_PROJECT_NAME} PRIVATE ${CTSHELL_LINK_OPTIONS})
+
+    ``${CTSHELL_LINK_OPTIONS}`` 由 ctshell 导出，会在检测到 LLVM 链接器时自动添加 ``-z nostart-stop-gc``，防止 ``__start_ctshell_cmd_section`` 和 ``__stop_ctshell_cmd_section`` 符号在 ``--gc-sections`` 下被回收。
+
+    **MDK-ARM（v5 and v6）：** 在scatter file中添加示例如下：
 
 .. code-block:: c
 

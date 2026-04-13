@@ -112,3 +112,13 @@ else()
 
     set(CTSHELL_DEFINITIONS ${CTSHELL_DEFINITIONS} CACHE INTERNAL "ctshell definitions")
 endif()
+
+# --- Linker options for section-based command registration ---
+# GCC (ld.bfd) handles __start_/__stop_ symbols for orphan sections automatically.
+# LLVM lld requires -z nostart-stop-gc to prevent these symbols from being
+# discarded when --gc-sections is enabled.
+set(CTSHELL_LINK_OPTIONS "")
+if(CMAKE_LINKER MATCHES "lld" OR CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND CTSHELL_LINK_OPTIONS "-z" "nostart-stop-gc")
+endif()
+set(CTSHELL_LINK_OPTIONS ${CTSHELL_LINK_OPTIONS} CACHE INTERNAL "ctshell linker options")
