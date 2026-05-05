@@ -110,6 +110,10 @@ config CTSHELL_PORT_WINDOWS
     bool
     prompt "Windows(for test use)"
 
+config CTSHELL_PORT_CHERRYUSB
+    bool
+    prompt "CherryUSB"
+
 endchoice
 
 if CTSHELL_PORT_ESP32
