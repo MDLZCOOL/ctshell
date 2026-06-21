@@ -54,11 +54,16 @@ static void ctshell_puts(ctshell_ctx_t *ctx, const char *str) {
 void ctshell_printf(const char *fmt, ...) {
     if (!g_ctshell_ctx || !g_ctshell_ctx->io.write) return;
 
-    char buf[128];
+    char buf[CONFIG_CTSHELL_PRINTF_BUF_SIZE];
     va_list args;
     va_start(args, fmt);
     int len = vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
+
+    if (len >= sizeof(buf)) {
+        strcpy(&buf[sizeof(buf) - 6], "...\r\n"); // use "..." as warning
+        len = sizeof(buf) - 1;
+    }
 
     if (len > 0) {
         g_ctshell_ctx->io.write(buf, (uint16_t) len, g_ctshell_ctx->priv);

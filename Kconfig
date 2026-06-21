@@ -72,6 +72,11 @@ config CTSHELL_FIFO_SIZE
     default 128
     range 32 512
 
+config CTSHELL_PRINTF_BUF_SIZE
+    int "ctshell_printf inner buff size"
+    default 128
+    range 128 8192
+
 config CTSHELL_PROMPT
     string "Shell prompt string"
     default "ctsh>> "
